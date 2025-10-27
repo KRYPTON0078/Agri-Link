@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriLink - AI-Powered Agri-Trade Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+        }
+        .agri-green {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .agri-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .country-flag {
+            width: 24px;
+            height: 16px;
+            display: inline-block;
+            margin-right: 8px;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .rating-stars {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="agri-green p-2 rounded-lg">
+                        <i class="fas fa-leaf text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">AgriLink</h1>
+                        <p class="text-green-600 font-medium">AI-Powered Agri-Trade De-risking Platform</p>
+                    </div>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="showView('buyer')" class="nav-btn active">👨💼 Buyer</button>
+                    <button onclick="showView('farmer')" class="nav-btn">👩🌾 Farmer</button>
+                    <button onclick="showView('blockchain')" class="nav-btn">⛓️ Blockchain</button>
+                    <button onclick="showView('tracking')" class="nav-btn">🚚 Tracking</button>
+                    <button onclick="showView('ratings')" class="nav-btn">⭐ Ratings</button>
+                    <button onclick="showView('impact')" class="nav-btn">📊 Impact</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main App Container -->
+    <div id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Active Trades</p>
+                        <p class="text-2xl font-bold text-gray-900" id="active-trades">156</p>
+                        <p class="text-sm text-green-600 mt-1">+18 today</p>
+                    </div>
+                    <i class="fas fa-chart-line text-2xl text-green-500"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Trade Volume</p>
+                        <p class="text-2xl font-bold text-gray-900" id="trade-volume">$3.2M</p>
+                        <p class="text-sm text-blue-600 mt-1">+8.7% this week</p>
+                    </div>
+                    <i class="fas fa-dollar-sign text-2xl text-blue-500"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Carbon Offset</p>
+                        <p class="text-2xl font-bold text-gray-900" id="carbon-offset">1,847 tons</p>
+                        <p class="text-sm text-purple-600 mt-1">Equivalent to 7,400 cars</p>
+                    </div>
+                    <i class="fas fa-globe text-2xl text-purple-500"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-orange-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Farmers Supported</p>
+                        <p class="text-2xl font-bold text-gray-900" id="farmers-supported">1,127</p>
+                        <p class="text-sm text-orange-600 mt-1">+84 this month</p>
+                    </div>
+                    <i class="fas fa-tractor text-2xl text-orange-500"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buyer View -->
+        <div id="buyer-view" class="view active">
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        <i class="fas fa-robot text-blue-500 mr-2"></i>
+                        AI-Curated Market Opportunities
+                    </h2>
+                    <div class="flex space-x-2">
+                        <div class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-bolt mr-1"></i>
+                            Real-time AI Analysis
+                        </div>
+                        <div class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-globe-americas mr-1"></i>
+                            3 Lusophone Countries
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Country Filter -->
+                <div class="flex space-x-2 mb-6">
+                    <button onclick="filterProducts('all')" class="country-filter active bg-gray-800 text-white px-4 py-2 rounded-lg">All Countries</button>
+                    <button onclick="filterProducts('mozambique')" class="country-filter bg-green-600 text-white px-4 py-2 rounded-lg">
+                        <span class="country-flag" style="background: linear-gradient(to bottom, #009639 33%, #fff 33%, #fff 66%, #000 66%);"></span>
+                        Mozambique
+                    </button>
+                    <button onclick="filterProducts('sao-tome')" class="country-filter bg-green-600 text-white px-4 py-2 rounded-lg">
+                        <span class="country-flag" style="background: linear-gradient(to bottom, #12ad2b 50%, #ffce00 50%);"></span>
+                        São Tomé
+                    </button>
+                    <button onclick="filterProducts('guinea-bissau')" class="country-filter bg-green-600 text-white px-4 py-2 rounded-lg">
+                        <span class="country-flag" style="background: linear-gradient(to right, #ce1126 33%, #fcd116 33%, #fcd116 66%, #009e49 66%);"></span>
+                        Guinea-Bissau
+                    </button>
+                </div>
+                
+                <div id="products-container" class="space-y-6">
+                    <!-- Products will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Farmer View -->
+        <div id="farmer-view" class="view">
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        <i class="fas fa-tractor text-green-500 mr-2"></i>
+                        Farmer Dashboard
+                    </h2>
+                    <div class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-seedling mr-1"></i>
+                        Sustainable Farming Partners
+                    </div>
+                </div>
+
+                <div id="farmer-orders">
+                    <!-- Orders will appear here -->
+                    <div class="text-center py-12 text-gray-500">
+                        <i class="fas fa-inbox text-4xl mb-4"></i>
+                        <p class="text-lg">No orders yet. Chinese buyers will appear here!</p>
+                        <p class="text-sm mt-2">When orders arrive, you can accept them and get instant pre-financing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blockchain View -->
+        <div id="blockchain-view" class="view">
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        <i class="fas fa-link text-purple-500 mr-2"></i>
+                        Blockchain Verification Journey
+                    </h2>
+                    <div class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-shield-alt mr-1"></i>
+                        Immutable & Secure
+                    </div>
+                </div>
+
+                <div id="blockchain-steps" class="space-y-4">
+                    <!-- Steps will appear here -->
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-project-diagram text-3xl mb-4"></i>
+                        <p>No active transactions. Place an order to see blockchain verification in action.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tracking View -->
+        <div id="tracking-view" class="view">
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        <i class="fas fa-shipping-fast text-red-500 mr-2"></i>
+                        Real-Time Shipment Tracking
+                    </h2>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/DHL_Express_logo.svg/1280px-DHL_Express_logo.svg.png" 
+                             alt="DHL" class="h-8">
+                        <div class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-satellite-dish mr-1"></i>
+                            Live GPS Tracking
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Shipments -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">
+                        <i class="fas fa-truck-loading mr-2"></i>
+                        Active Shipments
+                    </h3>
+                    <div id="active-shipments" class="space-y-4">
+                        <!-- Active shipments will appear here -->
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-shipping-fast text-3xl mb-4"></i>
+                            <p>No active shipments. Complete an order to track delivery.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracking Map -->
+                <div class="border-2 border-gray-200 rounded-2xl p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">
+                        <i class="fas fa-map-marked-alt mr-2"></i>
+                        Live Tracking Map
+                    </h3>
+                    <div id="tracking-map" class="bg-gray-100 rounded-xl h-96 flex items-center justify-center">
+                        <div class="text-center text-gray-500">
+                            <i class="fas fa-globe-americas text-4xl mb-4"></i>
+                            <p>Select a shipment to view real-time tracking</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracking Timeline -->
+                <div class="border-2 border-gray-200 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">
+                        <i class="fas fa-list-ol mr-2"></i>
+                        Shipment Timeline
+                    </h3>
+                    <div id="tracking-timeline" class="space-y-4">
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-history text-3xl mb-4"></i>
+                            <p>Tracking information will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ratings View -->
+        <div id="ratings-view" class="view">
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        <i class="fas fa-star text-yellow-500 mr-2"></i>
+                        Rating & Review System
+                    </h2>
+                    <div class="bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-medal mr-1"></i>
+                        Build Trust & Reputation
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Farmer Ratings -->
+                    <div class="border-2 border-green-200 rounded-2xl p-6">
+                        <h3 class="text-xl font-bold mb-4 text-green-800">
+                            <i class="fas fa-tractor mr-2"></i>
+                            Rate Farmers
+                        </h3>
+                        <div id="rate-farmer-section">
+                            <!-- Rating interface will appear here -->
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-star text-3xl mb-4"></i>
+                                <p>Complete an order to rate farmers</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buyer Ratings -->
+                    <div class="border-2 border-blue-200 rounded-2xl p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-800">
+                            <i class="fas fa-user-tie mr-2"></i>
+                            Rate Buyers
+                        </h3>
+                        <div id="rate-buyer-section">
+                            <!-- Rating interface will appear here -->
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-star text-3xl mb-4"></i>
+                                <p>Farmers can rate buyers here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating History -->
+                <div class="mt-8 border-2 border-gray-200 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold mb-4">Rating History</h3>
+                    <div id="rating-history">
+                        <!-- Rating history will appear here -->
+                        <div class="text-center py-4 text-gray-500">
+                            No ratings yet
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact View -->
+        <div id="impact-view" class="view">
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        <i class="fas fa-chart-line text-orange-500 mr-2"></i>
+                        Sustainability Impact Dashboard
+                    </h2>
+                    <div class="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-globe-americas mr-1"></i>
+                        Real-time Impact Tracking
+                    </div>
+                </div>
+
+                <!-- Impact Metrics -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                    <div class="agri-green text-white rounded-2xl p-6 text-center shadow-lg">
+                        <div class="text-3xl font-bold mb-2" id="impact-carbon">1,847</div>
+                        <div class="text-sm opacity-90">Tons CO₂ Offset</div>
+                        <div class="text-xs opacity-75 mt-2">Equivalent to 7,400 cars off road</div>
+                    </div>
+                    <div class="agri-blue text-white rounded-2xl p-6 text-center shadow-lg">
+                        <div class="text-3xl font-bold mb-2" id="impact-farmers">1,127</div>
+                        <div class="text-sm opacity-90">Farmers Supported</div>
+                        <div class="text-xs opacity-75 mt-2">Across 8 Portuguese-speaking countries</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl p-6 text-center shadow-lg">
+                        <div class="text-3xl font-bold mb-2" id="impact-volume">$3.2M</div>
+                        <div class="text-sm opacity-90">Trade Volume</div>
+                        <div class="text-xs opacity-75 mt-2">China-Lusophone corridor</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-2xl p-6 text-center shadow-lg">
+                        <div class="text-3xl font-bold mb-2" id="impact-trades">156</div>
+                        <div class="text-sm opacity-90">Successful Trades</div>
+                        <div class="text-xs opacity-75 mt-2">4.8★ Average Rating</div>
+                    </div>
+                </div>
+
+                <!-- Business Model -->
+                <div class="border-2 border-green-200 rounded-2xl p-6 bg-green-50">
+                    <h3 class="text-xl font-bold mb-4 text-green-800">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        Revenue Model
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-xl p-6 text-center shadow">
+                            <div class="text-3xl font-bold text-green-600 mb-2">1.5%</div>
+                            <div class="text-lg font-semibold text-gray-800">Transaction Fee</div>
+                            <div class="text-sm text-gray-600 mt-2">Per successful trade</div>
+                        </div>
+                        <div class="bg-white rounded-xl p-6 text-center shadow">
+                            <div class="text-3xl font-bold text-blue-600 mb-2">0.5%</div>
+                            <div class="text-lg font-semibold text-gray-800">Pre-Financing Fee</div>
+                            <div class="text-sm text-gray-600 mt-2">On farmer advances</div>
+                        </div>
+                        <div class="bg-white rounded-xl p-6 text-center shadow">
+                            <div class="text-3xl font-bold text-purple-600 mb-2">$99/mo</div>
+                            <div class="text-lg font-semibold text-gray-800">Premium Analytics</div>
+                            <div class="text-sm text-gray-600 mt-2">Advanced AI insights</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div id="rating-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold mb-4" id="modal-title">Rate this Transaction</h3>
+            <div class="mb-4">
+                <div class="flex justify-center space-x-1 mb-4" id="stars-container">
+                    <!-- Stars will be generated here -->
+                </div>
+                <textarea id="rating-comment" placeholder="Add your comments (optional)" class="w-full border border-gray-300 rounded-lg p-3 resize-none" rows="3"></textarea>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="closeRatingModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg">Cancel</button>
+                <button onclick="submitRating()" class="flex-1 agri-green text-white py-2 rounded-lg">Submit Rating</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Notification Modal -->
+    <div id="email-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold">
+                    <i class="fas fa-envelope text-blue-500 mr-2"></i>
+                    Shipping Update
+                </h3>
+                <button onclick="closeEmailModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <div id="email-content" class="bg-gray-50 rounded-lg p-4">
+                    <!-- Email content will be inserted here -->
+                </div>
+            </div>
+            <button onclick="closeEmailModal()" class="w-full agri-green text-white py-3 rounded-lg font-semibold">
+                Got it!
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
