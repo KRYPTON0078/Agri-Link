@@ -130,6 +130,6 @@ AgriLink transforms agricultural trade by:
 ---
 <div align="center">
 
-### Built with ❤️ for sustainable global trade
+
 
 </div>
